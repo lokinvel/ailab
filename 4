@@ -1,0 +1,30 @@
+from collections import deque
+def solve(b):
+    s=sum(b,[])
+    goal=list(range(9))
+    if s==goal:
+        print("Final Matrix:")
+        for i in range(0,9,3):
+            print(goal[i:i+3])
+        return 0
+    m=[[1,3],[0,2,4],[1,5],[0,4,6],[1,3,5,7],[2,4,8],[3,7],[4,6,8],[5,7]]
+    q=deque([(s,0)])
+    v=set()
+    while q:
+        t,c=q.popleft()
+        if tuple(t) in v:
+            continue
+        v.add(tuple(t))
+        z=t.index(0)
+        for i in m[z]:
+            n=t[:]
+            n[z],n[i]=n[i],n[z]
+            if n==goal:
+                print("Final Matrix:")
+                for j in range(0,9,3):
+                    print(n[j:j+3])
+                return c+1
+            q.append((n,c+1))
+    return -1
+moves=solve([[3,1,2],[4,7,5],[6,8,0]])
+print("Minimum moves:",moves)
