@@ -1,0 +1,15 @@
+jug1=4
+jug2=3
+x=0
+y=0
+print("Initial state:",x,y)
+y=jug2
+print("Fill jug2:",x,y)
+x=y
+y=0
+print("Pour jug2 into jug1:",x,y)
+y=jug2
+print("Fill jug2 again:",x,y)
+y=y-(jug1-x)
+x=jug1
+print("Final state:",x,y)
