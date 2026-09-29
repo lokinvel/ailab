@@ -1,0 +1,593 @@
+Program 1: BFS
+from collections import deque
+
+graph = {
+    'A': ['B', 'C'],
+    'B': ['D', 'E'],
+    'C': ['F'],
+    'D': [],
+    'E': ['F'],
+    'F': []
+}
+
+def bfs(graph, start):
+    visited = set()
+    queue = deque([start])
+    visited.add(start)
+
+    while queue:
+        node = queue.popleft()
+        print(node, end=" ")
+
+        for neighbor in graph[node]:
+            if neighbor not in visited:
+                visited.add(neighbor)
+                queue.append(neighbor)
+
+bfs(graph, 'A')
+Output:
+A B C D E F
+________________________________________
+Program 2: DFS
+graph = {
+    'A': ['B', 'C'],
+    'B': ['D', 'E'],
+    'C': ['F'],
+    'D': [],
+    'E': [],
+    'F': []
+}
+
+visited = set()
+
+def dfs(node):
+    if node not in visited:
+        print(node, end=" ")
+        visited.add(node)
+
+        for neighbor in graph[node]:
+            dfs(neighbor)
+
+dfs('A')
+Output:
+A B D E C F
+________________________________________
+Program 3: Tic-Tac-Toe Game
+board = [' ' for _ in range(9)]
+
+def display():
+    print(board[0], "|", board[1], "|", board[2])
+    print("--|---|--")
+    print(board[3], "|", board[4], "|", board[5])
+    print("--|---|--")
+    print(board[6], "|", board[7], "|", board[8])
+
+def check_winner(player):
+    win_positions = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6]
+    ]
+
+    for pos in win_positions:
+        if board[pos[0]] == board[pos[1]] == board[pos[2]] == player:
+            return True
+
+    return False
+
+player = 'X'
+
+for turn in range(9):
+    display()
+
+    move = int(input(f"Player {player}, enter position (0-8): "))
+
+    if board[move] == ' ':
+        board[move] = player
+
+        if check_winner(player):
+            display()
+            print(f"Player {player} wins!")
+            break
+
+        player = 'O' if player == 'X' else 'X'
+
+    else:
+        print("Position already filled")
+
+else:
+    print("Game Draw")
+Sample Output:
+X | X | X
+--|---|--
+O | O |
+--|---|--
+Player X wins!
+________________________________________
+Program 4: 8 Puzzle Game
+from collections import deque
+
+def solve(board):
+    start = sum(board, [])
+    goal = list(range(9))
+
+    if start == goal:
+        print("Final Matrix:")
+        for i in range(0, 9, 3):
+            print(goal[i:i + 3])
+        return 0
+
+    moves = [
+        [1, 3],
+        [0, 2, 4],
+        [1, 5],
+        [0, 4, 6],
+        [1, 3, 5, 7],
+        [2, 4, 8],
+        [3, 7],
+        [4, 6, 8],
+        [5, 7]
+    ]
+
+    queue = deque([(start, 0)])
+    visited = set()
+
+    while queue:
+        state, count = queue.popleft()
+
+        if tuple(state) in visited:
+            continue
+
+        visited.add(tuple(state))
+        zero = state.index(0)
+
+        for i in moves[zero]:
+            new_state = state[:]
+            new_state[zero], new_state[i] = new_state[i], new_state[zero]
+
+            if new_state == goal:
+                print("Final Matrix:")
+                for j in range(0, 9, 3):
+                    print(new_state[j:j + 3])
+                return count + 1
+
+            queue.append((new_state, count + 1))
+
+    return -1
+
+
+moves = solve([[3, 1, 2], [4, 7, 5], [6, 8, 0]])
+
+print("Minimum moves:", moves)
+Output:
+Final Matrix:
+[0, 1, 2]
+[3, 4, 5]
+[6, 7, 8]
+Minimum moves: 4
+________________________________________
+Program 5: Water Jug Problem
+jug1 = 4
+jug2 = 3
+
+x = 0
+y = 0
+
+print("Initial State:", x, y)
+
+y = jug2
+print("Fill Jug2:", x, y)
+
+x = y
+y = 0
+print("Pour Jug2 into Jug1:", x, y)
+
+y = jug2
+print("Fill Jug2 again:", x, y)
+
+y = y - (jug1 - x)
+x = jug1
+
+print("Final State:", x, y)
+Output:
+Initial State: 0 0
+Fill Jug2: 0 3
+Pour Jug2 into Jug1: 3 0
+Fill Jug2 again: 3 3
+Final State: 4 2
+________________________________________
+Program 6: Travelling Salesman Problem
+from itertools import permutations
+
+graph = {
+    'A': {'B': 10, 'C': 15, 'D': 20},
+    'B': {'A': 10, 'C': 35, 'D': 25},
+    'C': {'A': 15, 'B': 35, 'D': 30},
+    'D': {'A': 20, 'B': 25, 'C': 30}
+}
+
+cities = list(graph.keys())
+
+min_path = None
+min_cost = float('inf')
+
+for path in permutations(cities):
+    cost = 0
+
+    for i in range(len(path) - 1):
+        cost += graph[path[i]][path[i + 1]]
+
+    cost += graph[path[-1]][path[0]]
+
+    if cost < min_cost:
+        min_cost = cost
+        min_path = path
+
+print("Minimum Path:", min_path)
+print("Minimum Cost:", min_cost)
+Output:
+Minimum Path: ('A', 'B', 'D', 'C')
+Minimum Cost: 80
+________________________________________
+Program 7: Tower of Hanoi
+def tower(n, source, auxiliary, destination):
+    if n == 1:
+        print("Move disk 1 from", source, "to", destination)
+        return
+
+    tower(n - 1, source, destination, auxiliary)
+
+    print("Move disk", n, "from", source, "to", destination)
+
+    tower(n - 1, auxiliary, source, destination)
+
+
+tower(3, 'A', 'B', 'C')
+Output:
+Move disk 1 from A to C
+Move disk 2 from A to B
+Move disk 1 from C to B
+Move disk 3 from A to C
+Move disk 1 from B to A
+Move disk 2 from B to C
+Move disk 1 from A to C
+________________________________________
+Program 8: Monkey Banana Problem
+def monkey_banana_problem(n):
+    climb = 0
+    bananas = 0
+    hungry = True
+
+    for i in range(n):
+        if hungry:
+            climb += 1
+            bananas += 1
+            hungry = False
+        else:
+            climb += 1
+
+    return climb, bananas
+
+
+n = 10
+
+climb, bananas = monkey_banana_problem(n)
+
+print(f"The monkey made {climb} climbs and got {bananas} bananas.")
+Output:
+The monkey made 10 climbs and got 1 bananas.
+________________________________________
+Program 9: Alpha-Beta Pruning
+MAX = 1000
+MIN = -1000
+
+def alphabeta(depth, nodeIndex, maximizingPlayer, values, alpha, beta):
+    if depth == 3:
+        return values[nodeIndex]
+
+    if maximizingPlayer:
+        best = MIN
+
+        for i in range(2):
+            value = alphabeta(
+                depth + 1,
+                nodeIndex * 2 + i,
+                False,
+                values,
+                alpha,
+                beta
+            )
+
+            best = max(best, value)
+            alpha = max(alpha, best)
+
+            if beta <= alpha:
+                break
+
+        return best
+
+    else:
+        best = MAX
+
+        for i in range(2):
+            value = alphabeta(
+                depth + 1,
+                nodeIndex * 2 + i,
+                True,
+                values,
+                alpha,
+                beta
+            )
+
+            best = min(best, value)
+            beta = min(beta, best)
+
+            if beta <= alpha:
+                break
+
+        return best
+
+
+values = [3, 5, 6, 9, 1, 2, 0, -1]
+
+print(
+    "Optimal Value:",
+    alphabeta(0, 0, True, values, MIN, MAX)
+)
+Output:
+Optimal Value: 5
+________________________________________
+Program 10: 8 Queens Problem
+N = 8
+
+board = [[0] * N for _ in range(N)]
+
+def is_safe(board, row, col):
+
+    # Check row on the left
+    for i in range(col):
+        if board[row][i] == 1:
+            return False
+
+    # Check upper-left diagonal
+    i, j = row, col
+
+    while i >= 0 and j >= 0:
+        if board[i][j] == 1:
+            return False
+
+        i -= 1
+        j -= 1
+
+    # Check lower-left diagonal
+    i, j = row, col
+
+    while j >= 0 and i < N:
+        if board[i][j] == 1:
+            return False
+
+        i += 1
+        j -= 1
+
+    return True
+
+
+def solve(board, col):
+    if col >= N:
+        return True
+
+    for i in range(N):
+        if is_safe(board, i, col):
+            board[i][col] = 1
+
+            if solve(board, col + 1):
+                return True
+
+            board[i][col] = 0
+
+    return False
+
+
+solve(board, 0)
+
+for row in board:
+    print(row)
+Output:
+[1, 0, 0, 0, 0, 0, 0, 0]
+[0, 0, 0, 0, 0, 0, 1, 0]
+[0, 0, 0, 0, 1, 0, 0, 0]
+[0, 0, 0, 0, 0, 0, 0, 1]
+[0, 1, 0, 0, 0, 0, 0, 0]
+[0, 0, 0, 1, 0, 0, 0, 0]
+[0, 0, 0, 0, 0, 1, 0, 0]
+[0, 0, 1, 0, 0, 0, 0, 0]
+________________________________________
+Program 11: Simple Chatbot
+import random
+
+responses = [
+    "Hello, how can I help you?",
+    "What do you want to talk about?",
+    "I'm not sure what you mean.",
+    "Can you repeat that?",
+    "I'm sorry, I don't understand.",
+    "Goodbye!"
+]
+
+def get_response():
+    return random.choice(responses)
+
+
+def start_chatbot():
+    print("Hello, I'm a chatbot. What do you want to talk about?")
+
+    while True:
+        user_input = input().lower()
+
+        if user_input == "bye":
+            print("Goodbye!")
+            break
+
+        response = get_response()
+        print(response)
+
+
+start_chatbot()
+Sample Output:
+Hello, I'm a chatbot. What do you want to talk about?
+
+hi
+I'm sorry, I don't understand.
+
+hello
+What do you want to talk about?
+
+bye
+Goodbye!
+________________________________________
+Program 12: Hangman Game
+import random
+import string
+
+def choose_word():
+    words = [
+        "python",
+        "hangman",
+        "programming",
+        "developer",
+        "artificial",
+        "intelligence"
+    ]
+
+    return random.choice(words)
+
+
+def get_available_letters(letters_guessed):
+    return ''.join(
+        [
+            ch
+            for ch in string.ascii_lowercase
+            if ch not in letters_guessed
+        ]
+    )
+
+
+def get_guessed_word(secret_word, letters_guessed):
+    return ''.join(
+        [
+            ch if ch in letters_guessed else '_'
+            for ch in secret_word
+        ]
+    )
+
+
+def is_word_guessed(secret_word, letters_guessed):
+    return all(
+        ch in letters_guessed
+        for ch in secret_word
+    )
+
+
+def hangman(secret_word):
+    guesses_left = 8
+    letters_guessed = []
+
+    print("Welcome to the game Hangman!")
+    print(
+        f"I am thinking of a word that is "
+        f"{len(secret_word)} letters long."
+    )
+    print("-------------")
+
+    while guesses_left > 0:
+        print(f"You have {guesses_left} guesses left.")
+        print(
+            "Available letters:",
+            get_available_letters(letters_guessed)
+        )
+
+        guess = input("Please guess a letter: ").lower()
+
+        if guess in letters_guessed:
+            print(
+                "Oops! You've already guessed that letter:",
+                get_guessed_word(secret_word, letters_guessed)
+            )
+
+        elif guess in secret_word:
+            letters_guessed.append(guess)
+
+            print(
+                "Good guess:",
+                get_guessed_word(secret_word, letters_guessed)
+            )
+
+        else:
+            letters_guessed.append(guess)
+            guesses_left -= 1
+
+            print(
+                "Oops! That letter is not in my word:",
+                get_guessed_word(secret_word, letters_guessed)
+            )
+
+        print("-------------")
+
+        if is_word_guessed(secret_word, letters_guessed):
+            print("Congratulations, you won!")
+            break
+
+    else:
+        print(
+            f"Sorry, you ran out of guesses. "
+            f"The word was '{secret_word}'."
+        )
+
+
+word = choose_word()
+hangman(word)
+Sample Output:
+Welcome to the game Hangman!
+I am thinking of a word that is 10 letters long.
+-------------
+You have 8 guesses left.
+Available letters: abcdefghijklmnopqrstuvwxyz
+Please guess a letter: a
+Good guess: a_______a_
+-------------
+Congratulations, you won!
+________________________________________
+Program 13: Remove Stop Words Using NLTK
+import nltk
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
+
+nltk.download('punkt')
+nltk.download('stopwords')
+
+file = open("sample.txt", "r")
+
+text = file.read()
+
+words = word_tokenize(text)
+
+stop_words = set(stopwords.words('english'))
+
+filtered_words = []
+
+for word in words:
+    if word.lower() not in stop_words:
+        filtered_words.append(word)
+
+print("Filtered Words:")
+print(filtered_words)
+
+file.close()
+Output:
+Filtered Words:
+['Artificial', 'Intelligence', 'one', 'important', 'fields', 'computer', 'science', '.']
