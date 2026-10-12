@@ -563,6 +563,10 @@ Good guess: a_______a_
 Congratulations, you won!
 ________________________________________
 Program 13: Remove Stop Words Using NLTK
+
+python -m pip install nltk
+python -c "import nltk; nltk.download('punkt_tab')"
+
 import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
